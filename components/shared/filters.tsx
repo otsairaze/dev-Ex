@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Title } from "./title";
 import { FilterCheckbox } from "./filter-checkbox";
@@ -10,6 +12,7 @@ import {
 import { Input, Slider } from "../ui";
 import { RangeSlider } from "./range-slider";
 import { CheckboxFiltersGroup } from "./checkbox-filters-group";
+import { useFilterProducts } from "@/hooks/use-filter-products";
 
 interface Props {
   className?: string;
@@ -29,6 +32,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
               <FilterCheckbox text="Новинки" value="2" />
             </AccordionContent>
           </AccordionItem>
+
           <AccordionItem value="item-2">
             <AccordionTrigger>Цена</AccordionTrigger>
             <AccordionContent>
@@ -51,8 +55,9 @@ export const Filters: React.FC<Props> = ({ className }) => {
               <RangeSlider min={0} max={30000} step={100} value={[0, 30000]} />
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="3">
-            <AccordionTrigger>Комплектующие</AccordionTrigger>
+
+          <AccordionItem value="item-3">
+            <AccordionTrigger>Видеокарты</AccordionTrigger>
             <AccordionContent>
               <CheckboxFiltersGroup
                 className="mt-5"
@@ -186,6 +191,100 @@ export const Filters: React.FC<Props> = ({ className }) => {
                   },
                   {
                     text: "GeForce RTX 4090",
+                    value: "1",
+                  },
+                ]}
+              />
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="item-4">
+            <AccordionTrigger>Процессоры</AccordionTrigger>
+            <AccordionContent>
+              <CheckboxFiltersGroup
+                className="mt-5"
+                limit={6}
+                defaultItems={[
+                  {
+                    text: "Intel Core i9-13900K",
+                    value: "1",
+                  },
+                  {
+                    text: "AMD Ryzen 9 7950X",
+                    value: "1",
+                  },
+                  {
+                    text: "Intel Core i7-13700K",
+                    value: "1",
+                  },
+                  {
+                    text: "AMD Ryzen 7 7700X",
+                    value: "1",
+                  },
+                  {
+                    text: "Intel Core i5-13600K",
+                    value: "1",
+                  },
+                  {
+                    text: "AMD Ryzen 5 7600X",
+                    value: "1",
+                  },
+                  {
+                    text: "Intel Core i9-12900K",
+                    value: "1",
+                  },
+                  {
+                    text: "AMD Ryzen 9 5900X",
+                    value: "1",
+                  },
+                  {
+                    text: "Intel Core i7-12700K",
+                    value: "1",
+                  },
+                  {
+                    text: "AMD Ryzen 7 5800X",
+                    value: "1",
+                  },
+                ]}
+                items={[
+                  {
+                    text: "Intel Core i9-13900K",
+                    value: "1",
+                  },
+                  {
+                    text: "AMD Ryzen 9 7950X",
+                    value: "1",
+                  },
+                  {
+                    text: "Intel Core i7-13700K",
+                    value: "1",
+                  },
+                  {
+                    text: "AMD Ryzen 7 7700X",
+                    value: "1",
+                  },
+                  {
+                    text: "Intel Core i5-13600K",
+                    value: "1",
+                  },
+                  {
+                    text: "AMD Ryzen 5 7600X",
+                    value: "1",
+                  },
+                  {
+                    text: "Intel Core i9-12900K",
+                    value: "1",
+                  },
+                  {
+                    text: "AMD Ryzen 9 5900X",
+                    value: "1",
+                  },
+                  {
+                    text: "Intel Core i7-12700K",
+                    value: "1",
+                  },
+                  {
+                    text: "AMD Ryzen 7 5800X",
                     value: "1",
                   },
                 ]}
