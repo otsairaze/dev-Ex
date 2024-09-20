@@ -14,6 +14,8 @@ import { RangeSlider } from "./range-slider";
 import { CheckboxFiltersGroup } from "./checkbox-filters-group";
 import { useSet } from "react-use";
 import { useFilterProducts } from "@/hooks/use-filter-products";
+import qs from "qs";
+import { useRouter } from "next/navigation";
 
 interface Props {
   className?: string;
@@ -25,7 +27,13 @@ interface PriceProps {
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
-  const { items: products } = useFilterProducts();
+  const router = useRouter();
+
+  const {
+    items: products,
+    onToggleId,
+    selectedIds: selectedProduct,
+  } = useFilterProducts();
 
   const items = products.map((item) => ({
     text: item.name,
@@ -49,8 +57,17 @@ export const Filters: React.FC<Props> = ({ className }) => {
   };
 
   React.useEffect(() => {
-    console.log();
-  }, [prices, producerTypes]);
+    const filters = {
+      ...prices,
+      producerTypes: Array.from(producerTypes),
+      items,
+    };
+
+    const query = qs.stringify(filters, {
+      arrayFormat: "comma",
+    });
+    router.push(`?${query}`);
+  }, [prices, producerTypes, items, router]);
 
   return (
     <div className={className}>
@@ -65,7 +82,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
                 name="producerTypes"
                 className="mb-5"
                 onClickCheckbox={toggleProducerTypes}
-                selected={producerTypes}
+                selectedIds={producerTypes}
                 items={[
                   {
                     text: "NVIDIA",
@@ -124,110 +141,18 @@ export const Filters: React.FC<Props> = ({ className }) => {
           </AccordionItem>
 
           <AccordionItem value="item-3">
-            <AccordionTrigger>Видеокарты</AccordionTrigger>
-            <AccordionContent>
+            <AccordionTrigger>Товары</AccordionTrigger>
+            <AccordionContent className="max-w-xs overflow-auto">
               <CheckboxFiltersGroup
                 className="mt-5"
                 limit={6}
+                name="Товары"
                 defaultItems={items.map((item) => ({
                   text: item.text,
                   value: item.value,
                 }))}
                 items={items}
-              />
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="item-4">
-            <AccordionTrigger>Процессоры</AccordionTrigger>
-            <AccordionContent>
-              <CheckboxFiltersGroup
-                className="mt-5"
-                limit={6}
-                defaultItems={[
-                  {
-                    text: "Intel Core i9-13900K",
-                    value: "1",
-                  },
-                  {
-                    text: "AMD Ryzen 9 7950X",
-                    value: "1",
-                  },
-                  {
-                    text: "Intel Core i7-13700K",
-                    value: "1",
-                  },
-                  {
-                    text: "AMD Ryzen 7 7700X",
-                    value: "1",
-                  },
-                  {
-                    text: "Intel Core i5-13600K",
-                    value: "1",
-                  },
-                  {
-                    text: "AMD Ryzen 5 7600X",
-                    value: "1",
-                  },
-                  {
-                    text: "Intel Core i9-12900K",
-                    value: "1",
-                  },
-                  {
-                    text: "AMD Ryzen 9 5900X",
-                    value: "1",
-                  },
-                  {
-                    text: "Intel Core i7-12700K",
-                    value: "1",
-                  },
-                  {
-                    text: "AMD Ryzen 7 5800X",
-                    value: "1",
-                  },
-                ]}
-                items={[
-                  {
-                    text: "Intel Core i9-13900K",
-                    value: "1",
-                  },
-                  {
-                    text: "AMD Ryzen 9 7950X",
-                    value: "1",
-                  },
-                  {
-                    text: "Intel Core i7-13700K",
-                    value: "1",
-                  },
-                  {
-                    text: "AMD Ryzen 7 7700X",
-                    value: "1",
-                  },
-                  {
-                    text: "Intel Core i5-13600K",
-                    value: "1",
-                  },
-                  {
-                    text: "AMD Ryzen 5 7600X",
-                    value: "1",
-                  },
-                  {
-                    text: "Intel Core i9-12900K",
-                    value: "1",
-                  },
-                  {
-                    text: "AMD Ryzen 9 5900X",
-                    value: "1",
-                  },
-                  {
-                    text: "Intel Core i7-12700K",
-                    value: "1",
-                  },
-                  {
-                    text: "AMD Ryzen 7 5800X",
-                    value: "1",
-                  },
-                ]}
+                onClickCheckbox={onToggleId}
               />
             </AccordionContent>
           </AccordionItem>
