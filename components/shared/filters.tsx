@@ -2,72 +2,27 @@
 
 import React from "react";
 import { Title } from "./title";
-import { FilterCheckbox } from "./filter-checkbox";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "../ui/accordion";
-import { Input, Slider } from "../ui";
+
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
+import { Input } from "../ui";
 import { RangeSlider } from "./range-slider";
 import { CheckboxFiltersGroup } from "./checkbox-filters-group";
-import { useSet } from "react-use";
-import { useFilterProducts } from "@/hooks/use-filter-products";
-import qs from "qs";
-import { useRouter } from "next/navigation";
+import { useFilters, useProductFilters, useQueryFilters } from "@/hooks";
 
 interface Props {
   className?: string;
 }
 
-interface PriceProps {
-  priceFrom: number;
-  priceTo: number;
-}
-
 export const Filters: React.FC<Props> = ({ className }) => {
-  const router = useRouter();
+  const { items } = useProductFilters();
+  const filters = useFilters();
 
-  const {
-    items: products,
-    onToggleId,
-    selectedIds: selectedProduct,
-  } = useFilterProducts();
+  useQueryFilters(filters);
 
-  const items = products.map((item) => ({
+  const itemsProduct = items.map((item) => ({
     text: item.name,
     value: String(item.categoryId),
   }));
-
-  const [prices, setPrice] = React.useState<PriceProps>({
-    priceFrom: 0,
-    priceTo: 95000,
-  });
-
-  const [producerTypes, { toggle: toggleProducerTypes }] = useSet(
-    new Set<string>([])
-  );
-
-  const updatePrice = (name: keyof PriceProps, value: number) => {
-    setPrice((prev) => ({
-      ...prices,
-      [name]: value,
-    }));
-  };
-
-  React.useEffect(() => {
-    const filters = {
-      ...prices,
-      producerTypes: Array.from(producerTypes),
-      items,
-    };
-
-    const query = qs.stringify(filters, {
-      arrayFormat: "comma",
-    });
-    router.push(`?${query}`);
-  }, [prices, producerTypes, items, router]);
 
   return (
     <div className={className}>
@@ -81,8 +36,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
               <CheckboxFiltersGroup
                 name="producerTypes"
                 className="mb-5"
-                onClickCheckbox={toggleProducerTypes}
-                selectedIds={producerTypes}
+                onClickCheckbox={filters.setTypes}
+                selectedIds={filters.producerTypes}
                 items={[
                   {
                     text: "NVIDIA",
@@ -112,9 +67,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
                   max={95000}
                   defaultValue={0}
                   value={String(prices.priceFrom)}
-                  onChange={(e) =>
-                    updatePrice("priceFrom", Number(e.target.value))
-                  }
+                  onChange={(e) => updatePrice("priceFrom", Number(e.target.value))}
                 />
                 <Input
                   type="number"
@@ -123,20 +76,10 @@ export const Filters: React.FC<Props> = ({ className }) => {
                   max={95000}
                   defaultValue={0}
                   value={String(prices.priceTo)}
-                  onChange={(e) =>
-                    updatePrice("priceTo", Number(e.target.value))
-                  }
+                  onChange={(e) => updatePrice("priceTo", Number(e.target.value))}
                 />
               </div>
-              <RangeSlider
-                min={0}
-                max={95000}
-                step={100}
-                value={[prices.priceFrom, prices.priceTo]}
-                onValueChange={(value) =>
-                  setPrice({ priceFrom: value[0], priceTo: value[1] })
-                }
-              />
+              <RangeSlider min={0} max={95000} step={100} value={[]} onValueChange={(value) => setPrice({ priceFrom: value[0], priceTo: value[1] })} />
             </AccordionContent>
           </AccordionItem>
 
@@ -147,11 +90,11 @@ export const Filters: React.FC<Props> = ({ className }) => {
                 className="mt-5"
                 limit={6}
                 name="Товары"
-                defaultItems={items.map((item) => ({
+                defaultItems={itemsProduct.map((item) => ({
                   text: item.text,
                   value: item.value,
                 }))}
-                items={items}
+                items={itemsProduct}
                 onClickCheckbox={onToggleId}
               />
             </AccordionContent>
